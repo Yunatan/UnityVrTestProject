@@ -1,31 +1,43 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.VR;
 
 public class CameraMovement : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    GameObject[] eyes = new GameObject[2];
+    string[] eyeAnchorNames = { "LeftEyeAnchor", "RightEyeAnchor" };
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	    if (Input.GetKeyDown(KeyCode.W))
-	    {
-	        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 0.5f);
-	    }
-        if (Input.GetKeyDown(KeyCode.S))
+        for (int i = 0; i < 2; ++i)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 0.5f);
-        }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            transform.position = new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z);
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            transform.position = new Vector3(transform.position.x - 0.5f, transform.position.y, transform.position.z);
+            // If the eye anchor is no longer a child of us, don't use it
+            if (eyes[i] != null && eyes[i].transform.parent != transform)
+            {
+                eyes[i] = null;
+            }
+
+            // If we don't have an eye anchor, try to find one or create one
+            if (eyes[i] == null)
+            {
+                Transform t = transform.Find(eyeAnchorNames[i]);
+                if (t)
+                    eyes[i] = t.gameObject;
+
+                if (eyes[i] == null)
+                {
+                    eyes[i] = new GameObject(eyeAnchorNames[i]);
+                    eyes[i].transform.parent = gameObject.transform;
+                }
+            }
+
+            // Update the eye transform
+            eyes[i].transform.localPosition = InputTracking.GetLocalPosition((VRNode)i);
+            eyes[i].transform.localRotation = InputTracking.GetLocalRotation((VRNode)i);
         }
     }
 }
+
