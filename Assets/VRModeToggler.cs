@@ -7,7 +7,9 @@ public class VRModeToggler : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         GvrViewer.Instance.VRModeEnabled = false;
-        ((GvrHead)FindObjectOfType(typeof(GvrHead))).trackRotation = false;
+        var playerInstance = ((PlayerController)FindObjectOfType(typeof(PlayerController)));
+        var x = (CanvasObjectsManagementScript)Canvas.FindObjectOfType(typeof(CanvasObjectsManagementScript));
+        x.SetRecenterButtonVisibility(false);
     }
 	
 	// Update is called once per frame
@@ -21,9 +23,14 @@ public class VRModeToggler : MonoBehaviour {
     public void ToggleVR()
     {
         GvrViewer.Instance.VRModeEnabled = !GvrViewer.Instance.VRModeEnabled;
-        GvrViewer.Instance.gameObject.SetActive(!GvrViewer.Instance.gameObject.activeSelf);
-        ((GvrHead)FindObjectOfType(typeof(GvrHead))).trackRotation = !((GvrHead)FindObjectOfType(typeof(GvrHead))).trackRotation;
+        FindObjectOfType<GvrHead>().trackRotation = !FindObjectOfType<GvrHead>().trackRotation;
         var x = (CanvasObjectsManagementScript)Canvas.FindObjectOfType(typeof(CanvasObjectsManagementScript));
         x.ToggleMovemmentDpadVisibility();
+        x.ToggleRecenterButtonVisibility();
+    }
+
+    public void Recenter()
+    {
+        GvrViewer.Instance.Recenter();
     }
 }

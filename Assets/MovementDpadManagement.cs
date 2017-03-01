@@ -9,4 +9,10 @@ public class MovementDpadManagement : MonoBehaviour {
         var x = this.gameObject;
         x.SetActive(!x.activeSelf);        
     }
+
+    public Rect GetDimensions()
+    {
+        var rectTransform = this.GetComponent<RectTransform>();
+        return rectTransform.rect;
+    }
 }

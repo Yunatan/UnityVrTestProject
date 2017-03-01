@@ -19,4 +19,16 @@ public class CanvasObjectsManagementScript : MonoBehaviour {
         var x = this.GetComponentInChildren<MovementDpadManagement>(true);
         x.ToggleVisibility();
     }
+
+    public void ToggleRecenterButtonVisibility()
+    {
+        var x = this.GetComponentInChildren<RecenterButtonManagement>(true);
+        x.ToggleVisibility();
+    }
+
+    public void SetRecenterButtonVisibility(bool value)
+    {
+        var x = this.GetComponentInChildren<RecenterButtonManagement>(true);
+        x.SetVisibility(value);
+    }
 }

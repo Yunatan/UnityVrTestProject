@@ -36,7 +36,7 @@ public class GvrHead : MonoBehaviour {
   /// Determines whether to apply the user's head rotation to this gameobject's
   /// orientation.  True means to update the gameobject's orientation with the
   /// user's head rotation, and false means don't modify the gameobject's orientation.
-  public bool trackRotation = true;
+  public bool trackRotation = false;
 
   /// Determines whether to apply ther user's head offset to this gameobject's
   /// position.  True means to update the gameobject's position with the user's head offset,
