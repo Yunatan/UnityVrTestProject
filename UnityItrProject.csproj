@@ -183,6 +183,7 @@
     <Compile Include="Assets\MovementScript.cs" />
     <Compile Include="Assets\PlayerController.cs" />
     <Compile Include="Assets\RecenterButtonManagement.cs" />
+    <Compile Include="Assets\TextManagement.cs" />
     <Compile Include="Assets\VRModeToggler.cs" />
   </ItemGroup>
   <ItemGroup>

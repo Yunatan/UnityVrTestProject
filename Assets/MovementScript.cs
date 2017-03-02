@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,6 +16,7 @@ public class MovementScript : MonoBehaviour
     private float yAngTemp = 0.0f;
     public float speedModifier = 10f;
     public float acceleration = 6f;
+
 
     // Use this for initialization
     void Start()
@@ -38,36 +40,48 @@ public class MovementScript : MonoBehaviour
 
         CheckTouchMovement();
         CheckAxisMovement();
-        CheckMouseMovement();
+        ////CheckMouseMovement();
     }
 
     public void CheckTouchMovement()
     {
-        //Check count touches
-        if (Input.touchCount > 0)
+        var TouchString = string.Empty;
+        foreach (var x in Input.touches)
         {
-            var dPadDimensions = FindObjectOfType<MovementDpadManagement>().GetDimensions();
-            if (EventSystem.current.IsPointerOverGameObject())
+            var dPadPosition = FindObjectOfType<MovementDpadManagement>().GetDimensions();
+            if (!dPadPosition.Contains(x.position))
             {
                 //Touch began, save position
-                if (Input.GetTouch(0).phase == TouchPhase.Began && !dPadDimensions.Contains(Input.GetTouch(0).position))
+                if (x.phase == TouchPhase.Began)
                 {
-                    firstpoint = Input.GetTouch(0).position;
+                    firstpoint = x.position;
                     xAngTemp = xAngle;
                     yAngTemp = yAngle;
                 }
                 //Move finger by screen
-                if (Input.GetTouch(0).phase == TouchPhase.Moved && !dPadDimensions.Contains(Input.GetTouch(0).position))
+                if (x.phase == TouchPhase.Moved)
                 {
-                    secondpoint = Input.GetTouch(0).position;
+                    secondpoint = x.position;
                     //Mainly, about rotate camera. For example, for Screen.width rotate on 180 degree
                     xAngle = xAngTemp + (secondpoint.x - firstpoint.x) * 180.0f / Screen.width;
                     yAngle = yAngTemp - (secondpoint.y - firstpoint.y) * 90.0f / Screen.height;
                     //Rotate camera
-                    Camera.main.transform.rotation = Quaternion.Euler(yAngle, xAngle, 0.0f);
+                    transform.rotation = Quaternion.Euler(yAngle, xAngle, 0.0f);
                 }
             }
+
+            ////TouchString += string.Format("Input {0}: x - {1}, y - {2} \n", x.fingerId, x.position.x.ToString(), x.position.y.ToString());
         }
+        
+        ////var dPadPosition2 = FindObjectOfType<MovementDpadManagement>().GetDimensions();
+        ////FindObjectOfType<TextManagement>().AppendMesage(
+        ////    string.Format(
+        ////        "{0} \n x: {1}, y: {2} \n sizeWidth: {3}, sizeHeight: {4}", 
+        ////        TouchString,
+        ////        dPadPosition2.position.x.ToString(),
+        ////        dPadPosition2.position.y.ToString(),
+        ////        dPadPosition2.size.x,
+        ////        dPadPosition2.size.y));
     }
 
     public void CheckAxisMovement()
@@ -82,25 +96,24 @@ public class MovementScript : MonoBehaviour
 
     public void CheckMouseMovement()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            var dPadDimensions = FindObjectOfType<MovementDpadManagement>().GetDimensions();
-            if (!dPadDimensions.Contains(Input.mousePosition))
+        
+            if (Input.GetMouseButtonDown(0))
             {
+
                 firstpoint = Input.mousePosition;
                 xAngTemp = xAngle;
                 yAngTemp = yAngle;
-            }
-        }
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            secondpoint = Input.mousePosition;
-            xAngle = xAngTemp + (secondpoint.x - firstpoint.x) * 180.0f / Screen.width;
-            yAngle = yAngTemp - (secondpoint.y - firstpoint.y) * 90.0f / Screen.height;
-            var z = Quaternion.Euler(yAngle, xAngle, 0.0f);
-            this.transform.rotation = z;
-        }
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                secondpoint = Input.mousePosition;
+                xAngle = xAngTemp + (secondpoint.x - firstpoint.x) * 180.0f / Screen.width;
+                yAngle = yAngTemp - (secondpoint.y - firstpoint.y) * 90.0f / Screen.height;
+                var z = Quaternion.Euler(yAngle, xAngle, 0.0f);
+                this.transform.rotation = z;
+            }
+        
     }
 
     public void MoveForward()
