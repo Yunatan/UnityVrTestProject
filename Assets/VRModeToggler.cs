@@ -4,35 +4,53 @@ using UnityEngine;
 
 public class VRModeToggler : MonoBehaviour {
 
+    Quaternion zeroQuaternion = new Quaternion {
+        x = 0,
+        y = 0,
+        z = 0
+    };
+
+    Quaternion rememberd;
+
 	// Use this for initialization
 	void Start ()
     {
         GvrViewer.Instance.VRModeEnabled = false;
         FindObjectOfType<GvrHead>().trackRotation = false;
-        FindObjectOfType<GvrHead>().trackPosition = false;
-        var playerInstance = ((PlayerController)FindObjectOfType(typeof(PlayerController)));
+        FindObjectOfType<GvrHead>().target = FindObjectOfType<PlayerController>().transform;
         var x = (CanvasObjectsManagementScript)Canvas.FindObjectOfType(typeof(CanvasObjectsManagementScript));
         x.SetRecenterButtonVisibility(false);
     }
 	
-	// Update is called once per frame
-	void Update ()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            GvrViewer.Instance.VRModeEnabled = !GvrViewer.Instance.VRModeEnabled;
-        }
-	}
-
     public void ToggleVR()
     {
-        GvrViewer.Instance.Recenter();
+        var head = FindObjectOfType<GvrHead>();
         GvrViewer.Instance.VRModeEnabled = !GvrViewer.Instance.VRModeEnabled;
-        FindObjectOfType<GvrHead>().trackRotation = !FindObjectOfType<GvrHead>().trackRotation;
+
+        head.trackRotation = !head.trackRotation;
+        if (!GvrViewer.Instance.VRModeEnabled)
+        {
+            var camera = FindObjectOfType<CameraManagement>();
+            var player = FindObjectOfType<PlayerController>();
+
+            var rotation = Camera.main.transform.rotation;
+            player.SetRotationAndAngles(Quaternion.identity);
+            player.SetRotationAndAngles(rotation);
+            camera.SetRotation(rotation);
+        }
+        else
+        {
+            var camera = FindObjectOfType<CameraManagement>();
+            var player = FindObjectOfType<PlayerController>();
+            var rotation = Camera.main.transform.rotation;
+            player.SetRotationAndAngles(Quaternion.identity);
+            camera.SetRotation(Quaternion.identity);
+            Recenter();
+        }
+
         var x = (CanvasObjectsManagementScript)Canvas.FindObjectOfType(typeof(CanvasObjectsManagementScript));
         x.ToggleMovemmentDpadVisibility();
-        x.ToggleRecenterButtonVisibility();
-        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(Camera.main.transform.rotation.x, 0, Camera.main.transform.rotation.z));
+        x.ToggleRecenterButtonVisibility();        
     }
 
     public void Recenter()

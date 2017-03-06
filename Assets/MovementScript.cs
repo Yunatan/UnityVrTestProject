@@ -10,10 +10,10 @@ public class MovementScript : MonoBehaviour
     private Vector3 axisMovementVector = new Vector3();
     private Vector3 firstpoint; //change type on Vector3
     private Vector3 secondpoint;
-    private float xAngle = 0.0f; //angle for axes x for rotation
-    private float yAngle = 0.0f;
-    private float xAngTemp = 0.0f; //temp variable for angle
-    private float yAngTemp = 0.0f;
+    public float xAngle = 0.0f; //angle for axes x for rotation
+    public float yAngle = 0.0f;
+    public float xAngTemp = 0.0f; //temp variable for angle
+    public float yAngTemp = 0.0f;
     public float speedModifier = 10f;
     public float acceleration = 6f;
 
@@ -35,12 +35,14 @@ public class MovementScript : MonoBehaviour
         body.AddForce(velocityVector * acceleration, ForceMode.Acceleration);
         if (axisMovementVector != Vector3.zero)
         {
-            this.GetComponent<Rigidbody>().velocity = axisMovementVector;
+            velocityVector = Camera.main.transform.TransformDirection(axisMovementVector);
+            velocityVector.y = 0;
+            body.AddForce(velocityVector * acceleration, ForceMode.Acceleration);
         }
 
         CheckTouchMovement();
         CheckAxisMovement();
-        ////CheckMouseMovement();
+        //CheckMouseMovement();
     }
 
     public void CheckTouchMovement()
@@ -65,8 +67,8 @@ public class MovementScript : MonoBehaviour
                     //Mainly, about rotate camera. For example, for Screen.width rotate on 180 degree
                     xAngle = xAngTemp + (secondpoint.x - firstpoint.x) * 180.0f / Screen.width;
                     yAngle = yAngTemp - (secondpoint.y - firstpoint.y) * 90.0f / Screen.height;
-                    //Rotate camera
-                    transform.rotation = Quaternion.Euler(yAngle, xAngle, 0.0f);
+                    //Rotate player
+                    FindObjectOfType<PlayerController>().SetRotation(Quaternion.Euler(yAngle, xAngle, 0.0f));
                 }
             }
 
@@ -111,9 +113,14 @@ public class MovementScript : MonoBehaviour
                 xAngle = xAngTemp + (secondpoint.x - firstpoint.x) * 180.0f / Screen.width;
                 yAngle = yAngTemp - (secondpoint.y - firstpoint.y) * 90.0f / Screen.height;
                 var z = Quaternion.Euler(yAngle, xAngle, 0.0f);
-                this.transform.rotation = z;
-            }
+                FindObjectOfType<PlayerController>().SetRotation(z);
+        }
         
+    }
+
+    public void ApplyRotation()
+    {
+        FindObjectOfType<PlayerController>().SetRotation(Quaternion.Euler(yAngle, xAngle, 0.0f));
     }
 
     public void MoveForward()
