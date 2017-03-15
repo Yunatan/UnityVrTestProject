@@ -42,7 +42,7 @@ public class MovementScript : MonoBehaviour
 
         CheckTouchMovement();
         CheckAxisMovement();
-        //CheckMouseMovement();
+        CheckMouseMovement();
     }
 
     public void CheckTouchMovement()
