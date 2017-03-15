@@ -29,7 +29,7 @@ public class MovementScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var body = this.GetComponent<Rigidbody>();
+        var body = this.GetComponentInParent<PlayerBodyController>().GetComponent<Rigidbody>();
         var velocityVector = Camera.main.transform.TransformDirection(movementVector);
         velocityVector.y = 0;
         body.AddForce(velocityVector * acceleration, ForceMode.Acceleration);
@@ -42,7 +42,7 @@ public class MovementScript : MonoBehaviour
 
         CheckTouchMovement();
         CheckAxisMovement();
-        CheckMouseMovement();
+        //CheckMouseMovement();
     }
 
     public void CheckTouchMovement()

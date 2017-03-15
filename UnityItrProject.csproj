@@ -181,6 +181,7 @@
     <Compile Include="Assets\GoogleVR\Scripts\Video\GvrVideoPlayerTexture.cs" />
     <Compile Include="Assets\MovementDpadManagement.cs" />
     <Compile Include="Assets\MovementScript.cs" />
+    <Compile Include="Assets\PlayerBodyController.cs" />
     <Compile Include="Assets\PlayerController.cs" />
     <Compile Include="Assets\RecenterButtonManagement.cs" />
     <Compile Include="Assets\TextManagement.cs" />
